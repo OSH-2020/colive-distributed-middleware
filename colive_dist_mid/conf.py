@@ -1,1 +1,5 @@
-AUTH_SERVER_URL = 'http://127.0.0.1/'
+import os
+
+
+AUTH_SERVER_URL = os.getenv('AUTH_SERVER_URL')
+MIDDLEWARE_SERVER_PORT = os.getenv('MIDDLEWARE_SERVER_PORT', 8000)
