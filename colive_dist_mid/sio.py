@@ -34,7 +34,7 @@ class ServerNamespace(socketio.Namespace):
 
     def on_login(self, sid, data):
         self.local_sid = sid
-        data = {**data, 'sid': sid}
+        data = {**data, 'sid': sid, 'addr': conf.LOCAL_SERVER_URL}
         auth_sio.emit('login', data=data)
 
     def on_message(self, sid, data):
@@ -60,8 +60,8 @@ sio.register_namespace(ServerNamespace('/'))
 
 class AuthClientNamespace(socketio.ClientNamespace):
     def on_login(self, data: dict):
-        clients = data.pop('clients')
-        for c in clients:
+        addr_set = data.pop('addr_set')
+        for c in addr_set:
             c_sio = socketio.AsyncClient()
 
             @c_sio.event
