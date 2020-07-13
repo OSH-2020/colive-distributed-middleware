@@ -17,10 +17,10 @@ class ServerNamespace(socketio.Namespace):
         super().__init__(*args, **kwargs)
 
     def on_connect(self, sid, environ):
-        print('Hello World\n\n\n\n')
         if self.local_sid is None:
             auth_sio.connect(conf.AUTH_SERVER_URL)
         else:
+            print('Welcome {}'.format(sid))
             sio.enter_room(sid, 'client')
 
     def on_disconnect(self, sid):
@@ -38,6 +38,7 @@ class ServerNamespace(socketio.Namespace):
         auth_sio.emit('login', data=data)
 
     def on_message(self, sid, data):
+        print(client_sio_set)
         if sid != self.local_sid:
             sio.emit('message', sid=self.local_sid, data=data)
         else:
@@ -62,7 +63,7 @@ class AuthClientNamespace(socketio.ClientNamespace):
     def on_login(self, data: dict):
         addr_set = data.pop('addr_set')
         for c in addr_set:
-            c_sio = socketio.AsyncClient()
+            c_sio = socketio.Client()
 
             @c_sio.event
             def message(data):
